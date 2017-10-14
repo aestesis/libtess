@@ -38,16 +38,32 @@
 #include <limits.h>		/* LONG_MAX */
 #include "memalloc.h"
 
+#define INIT_SIZE 32
+
+#ifndef TRUE
+#define TRUE 1
+#endif
+#ifndef FALSE
+#define FALSE 0
+#endif
+
+#ifdef FOR_TRITE_TEST_PROGRAM
+#define LEQ(x,y)  (*pq->leq)(x,y)
+#else
+/* Violates modularity, but a little faster */
+#include "geom.h"
+#define LEQ(x,y)  VertLeq((GLUvertex *)x, (GLUvertex *)y)
+#endif
 /* Include all the code for the regular heap-based queue here. */
 
-#include "../pq/priorityq-heap.c"
+//#include "priorityq-heap.c"
 
 /* Now redefine all the function names to map to their "Sort" versions. */
 
 #include "priorityq-sort.h"
 
 /* really __gl_pqSortNewPriorityQ */
-PriorityQ *pqNewPriorityQ( int (*leq)(PQkey key1, PQkey key2) )
+PriorityQ *__gl_pqSortNewPriorityQ( int (*leq)(PQkey key1, PQkey key2) )
 {
   PriorityQ *pq = (PriorityQ *)memAlloc( sizeof( PriorityQ ));
   if (pq == NULL) return NULL;
@@ -73,7 +89,7 @@ PriorityQ *pqNewPriorityQ( int (*leq)(PQkey key1, PQkey key2) )
 }
 
 /* really __gl_pqSortDeletePriorityQ */
-void pqDeletePriorityQ( PriorityQ *pq )
+void __gl_pqSortDeletePriorityQ( PriorityQ *pq )
 {
   assert(pq != NULL); 
   if (pq->heap != NULL) __gl_pqHeapDeletePriorityQ( pq->heap );
@@ -88,7 +104,7 @@ void pqDeletePriorityQ( PriorityQ *pq )
 #define Swap(a,b)	do{PQkey *tmp = *a; *a = *b; *b = tmp;}while(0)
 
 /* really __gl_pqSortInit */
-int pqInit( PriorityQ *pq )
+int __gl_pqSortInit( PriorityQ *pq )
 {
   PQkey **p, **r, **i, **j, *piv;
   struct { PQkey **p, **r; } Stack[50], *top = Stack;
@@ -170,7 +186,7 @@ int pqInit( PriorityQ *pq )
 
 /* really __gl_pqSortInsert */
 /* returns LONG_MAX iff out of memory */ 
-PQhandle pqInsert( PriorityQ *pq, PQkey keyNew )
+PQhandle __gl_pqSortInsert( PriorityQ *pq, PQkey keyNew )
 {
   long curr;
 
@@ -199,7 +215,7 @@ PQhandle pqInsert( PriorityQ *pq, PQkey keyNew )
 }
 
 /* really __gl_pqSortExtractMin */
-PQkey pqExtractMin( PriorityQ *pq )
+PQkey __gl_pqSortExtractMin( PriorityQ *pq )
 {
   PQkey sortMin, heapMin;
 
@@ -220,7 +236,7 @@ PQkey pqExtractMin( PriorityQ *pq )
 }
 
 /* really __gl_pqSortMinimum */
-PQkey pqMinimum( PriorityQ *pq )
+PQkey __gl_pqSortMinimum( PriorityQ *pq )
 {
   PQkey sortMin, heapMin;
 
@@ -238,13 +254,13 @@ PQkey pqMinimum( PriorityQ *pq )
 }
 
 /* really __gl_pqSortIsEmpty */
-int pqIsEmpty( PriorityQ *pq )
+int __gl_pqSortIsEmpty( PriorityQ *pq )
 {
   return (pq->size == 0) && __gl_pqHeapIsEmpty( pq->heap );
 }
 
 /* really __gl_pqSortDelete */
-void pqDelete( PriorityQ *pq, PQhandle curr )
+void __gl_pqSortDelete( PriorityQ *pq, PQhandle curr )
 {
   if( curr >= 0 ) {
     __gl_pqHeapDelete( pq->heap, curr );
