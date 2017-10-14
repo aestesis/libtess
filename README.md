@@ -1,3 +1,3 @@
 # libtess
 
-A description of this package.
+libtess swift package
