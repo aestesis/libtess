@@ -32,6 +32,8 @@
 **
 */
 
+#ifdef IMPORTHEAP
+
 #include <stddef.h>
 #include <assert.h>
 #include "priorityq-heap.h"
@@ -56,7 +58,7 @@
 #endif
 
 /* really __gl_pqHeapNewPriorityQ */
-PriorityQ *__gl_pqHeapNewPriorityQ( int (*leq)(PQkey key1, PQkey key2) )
+PriorityQ *pqNewPriorityQ( int (*leq)(PQkey key1, PQkey key2) )
 {
   PriorityQ *pq = (PriorityQ *)memAlloc( sizeof( PriorityQ ));
   if (pq == NULL) return NULL;
@@ -86,7 +88,7 @@ PriorityQ *__gl_pqHeapNewPriorityQ( int (*leq)(PQkey key1, PQkey key2) )
 }
 
 /* really __gl_pqHeapDeletePriorityQ */
-void __gl_pqHeapDeletePriorityQ( PriorityQ *pq )
+void pqDeletePriorityQ( PriorityQ *pq )
 {
   memFree( pq->handles );
   memFree( pq->nodes );
@@ -147,7 +149,7 @@ static void FloatUp( PriorityQ *pq, long curr )
 }
 
 /* really __gl_pqHeapInit */
-void __gl_pqHeapInit( PriorityQ *pq )
+void pqInit( PriorityQ *pq )
 {
   long i;
 
@@ -161,7 +163,7 @@ void __gl_pqHeapInit( PriorityQ *pq )
 
 /* really __gl_pqHeapInsert */
 /* returns LONG_MAX iff out of memory */
-PQhandle __gl_pqHeapInsert( PriorityQ *pq, PQkey keyNew )
+PQhandle pqInsert( PriorityQ *pq, PQkey keyNew )
 {
   long curr;
   PQhandle free_handle;
@@ -209,7 +211,7 @@ PQhandle __gl_pqHeapInsert( PriorityQ *pq, PQkey keyNew )
 }
 
 /* really __gl_pqHeapExtractMin */
-PQkey __gl_pqHeapExtractMin( PriorityQ *pq )
+PQkey pqExtractMin( PriorityQ *pq )
 {
   PQnode *n = pq->nodes;
   PQhandleElem *h = pq->handles;
@@ -232,7 +234,7 @@ PQkey __gl_pqHeapExtractMin( PriorityQ *pq )
 }
 
 /* really __gl_pqHeapDelete */
-void __gl_pqHeapDelete( PriorityQ *pq, PQhandle hCurr )
+void pqDelete( PriorityQ *pq, PQhandle hCurr )
 {
   PQnode *n = pq->nodes;
   PQhandleElem *h = pq->handles;
@@ -255,3 +257,5 @@ void __gl_pqHeapDelete( PriorityQ *pq, PQhandle hCurr )
   h[hCurr].node = pq->freeList;
   pq->freeList = hCurr;
 }
+
+#endif
