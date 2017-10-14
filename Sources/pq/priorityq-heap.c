@@ -34,8 +34,8 @@
 
 #include <stddef.h>
 #include <assert.h>
-#include "priorityq-heap.h"
-#include "memalloc.h"
+#include "../libtess/priorityq-heap.h"
+#include "../libtess/memalloc.h"
 #include <limits.h>
 
 #define INIT_SIZE	32
@@ -51,7 +51,7 @@
 #define LEQ(x,y)	(*pq->leq)(x,y)
 #else
 /* Violates modularity, but a little faster */
-#include "geom.h"
+#include "../libtess/geom.h"
 #define LEQ(x,y)	VertLeq((GLUvertex *)x, (GLUvertex *)y)
 #endif
 
