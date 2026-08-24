@@ -22,6 +22,7 @@ typedef struct  {
     double z;
     double u;
     double v;
+    double padding; // swift needs this padding.. wtf..
 } TessVertex;
 
 void *tessInit(TessBegin *begin, TessDraw *draw, TessEnd *end);
